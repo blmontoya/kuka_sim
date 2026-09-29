@@ -1,6 +1,6 @@
 [workspace]
 channels = ["https://prefix.dev/conda-forge"]
-name = "TEMPLATE"
+name = "kuka_sim"
 platforms = ["linux-64"]
 version = "0.1.0"
 # Map conda pywin32 to satisfy pypi pywin32 requirement (isaacsim needs pywin32 but it's Windows-only on PyPI)
@@ -158,6 +158,7 @@ scripts = ["ros2_ws/install/setup.bash", "scripts/config-ros2-colcon.bash"]
 # Isaac Sim 5.1.0 now supports Python 3.11!
 [feature.isaaclab]
 [feature.isaaclab.dependencies]
+setuptools = "<81"
 sysroot_linux-64 = ">=2.35"
 # Need newer GCC/binutils to work with glibc 2.39's .relr.dyn sections
 gxx_linux-64 = ">=12"
@@ -238,6 +239,10 @@ isaaclab-mimic  = { path = "IsaacLab/source/isaaclab_mimic", editable = true }
 [feature.isaaclab-newton.tasks]
 # Install Isaac Lab Newton from specific commit (requires submodules)
 install-isaaclab-newton = { cmd = "cd IsaacLabNewton && ./isaaclab.sh -i", depends-on = ["gitmod"] }
+
+[feature.isaaclab.pypi-options]
+no-build-isolation = ["flatdict"]
+
 # Override packages that have malformed (index: ...) syntax in their dependencies
 [feature.isaaclab-newton.pypi-options.dependency-overrides]
 warp-lang = ">=1.11.0.dev0"

@@ -1,6 +1,6 @@
 # This is only needed for editable installations
 [project]
-name = "TEMPLATE"
+name = "kuka_sim"
 version = "0.1.0"
 description = "A Python project template"
 
@@ -9,4 +9,4 @@ build-backend = "hatchling.build"
 requires = ["hatchling"]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/TEMPLATE"]
+packages = ["src/kuka_sim"]

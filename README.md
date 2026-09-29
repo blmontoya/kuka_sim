@@ -80,7 +80,7 @@ This repository primarily targets x86-64 Linux.
 
 ```bash
 git clone <YOUR_REPO_LINK>
-cd TEMPLATE && git submodule update --init --recursive
+cd kuka_sim && git submodule update --init --recursive
 ```
 
 [Pixi](https://pixi.sh/latest/) (version 0.62.2) is all that's needed to locally to resolve dependencies if:
@@ -104,7 +104,7 @@ If using Docker, install [Docker](https://docs.docker.com/engine/install/ubuntu/
 ```bash
 # Build and enter the container
 bash scripts/develop-compose.bash
-# For a new terminal, run "docker exec -it TEMPLATE_dev bash"
+# For a new terminal, run "docker exec -it kuka_sim_dev bash"
 # To stop, run "docker compose down && sudo xhost -"
 ```
 

@@ -26,4 +26,4 @@ echo "🚀 Starting Docker Compose build..."
 echo "This may take a minute, grab a snack ;)"
 docker compose build
 docker compose up -d
-docker exec -it TEMPLATE_dev bash
+docker exec -it kuka_sim_dev bash

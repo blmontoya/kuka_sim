@@ -1,0 +1,590 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot name="lbr_iiwa7_r800">
+  <!-- KUKA LBR iiwa7 R800 (lbr-stack v2.5.0 meshes) + HandUMI gripper on lbr_link_ee. Generated from ~/Downloads/handumi_kuka_iiwa7/iiwa7/iiwa7_handumi.urdf: arm inertials added (approximate), arm collisions = visual meshes, mimic removed (drive both finger joints; q = opening/2 [m], 0..0.037). -->
+  <link name="lbr_link_0">
+    <inertial>
+      <origin xyz="-0.1 0 0.07" rpy="0 0 0" />
+      <mass value="3.0" />
+      <inertia ixx="0.02" ixy="0" ixz="0" iyy="0.02" iyz="0" izz="0.02" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/arm/link_0.stl" />
+      </geometry>
+      <material name="kuka_grey">
+        <color rgba="0.85 0.85 0.85 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/arm/link_0.stl" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="lbr_link_1">
+    <inertial>
+      <origin xyz="0 -0.03 0.12" rpy="0 0 0" />
+      <mass value="3.4525" />
+      <inertia ixx="0.02" ixy="0" ixz="0" iyy="0.02" iyz="0" izz="0.02" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 -0.1475" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/arm/link_1.stl" />
+      </geometry>
+      <material name="kuka_grey">
+        <color rgba="0.85 0.85 0.85 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.1475" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/arm/link_1.stl" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="lbr_link_2">
+    <inertial>
+      <origin xyz="0.0003 0.059 0.042" rpy="0 0 0" />
+      <mass value="3.4821" />
+      <inertia ixx="0.02" ixy="0" ixz="0" iyy="0.02" iyz="0" izz="0.02" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0.0105 -0.34" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/arm/link_2.stl" />
+      </geometry>
+      <material name="kuka_grey">
+        <color rgba="0.85 0.85 0.85 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0.0105 -0.34" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/arm/link_2.stl" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="lbr_link_3">
+    <inertial>
+      <origin xyz="0 0.03 0.13" rpy="0 0 0" />
+      <mass value="4.05623" />
+      <inertia ixx="0.02" ixy="0" ixz="0" iyy="0.02" iyz="0" izz="0.02" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 -0.5475" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/arm/link_3.stl" />
+      </geometry>
+      <material name="kuka_grey">
+        <color rgba="0.85 0.85 0.85 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.5475" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/arm/link_3.stl" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="lbr_link_4">
+    <inertial>
+      <origin xyz="0 0.067 0.034" rpy="0 0 0" />
+      <mass value="3.4822" />
+      <inertia ixx="0.02" ixy="0" ixz="0" iyy="0.02" iyz="0" izz="0.02" />
+    </inertial>
+    <visual>
+      <origin xyz="0 -0.0105 -0.74" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/arm/link_4.stl" />
+      </geometry>
+      <material name="kuka_grey">
+        <color rgba="0.85 0.85 0.85 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 -0.0105 -0.74" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/arm/link_4.stl" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="lbr_link_5">
+    <inertial>
+      <origin xyz="0.0001 0.021 0.076" rpy="0 0 0" />
+      <mass value="2.1633" />
+      <inertia ixx="0.02" ixy="0" ixz="0" iyy="0.02" iyz="0" izz="0.02" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 -0.9475" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/arm/link_5.stl" />
+      </geometry>
+      <material name="kuka_grey">
+        <color rgba="0.85 0.85 0.85 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.9475" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/arm/link_5.stl" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="lbr_link_6">
+    <inertial>
+      <origin xyz="0 0.0006 0.0004" rpy="0 0 0" />
+      <mass value="2.3466" />
+      <inertia ixx="0.02" ixy="0" ixz="0" iyy="0.02" iyz="0" izz="0.02" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0.0707 -1.14" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/arm/link_6.stl" />
+      </geometry>
+      <material name="kuka_grey">
+        <color rgba="0.85 0.85 0.85 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0.0707 -1.14" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/arm/link_6.stl" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="lbr_link_7">
+    <inertial>
+      <origin xyz="0 0 0.02" rpy="0 0 0" />
+      <mass value="3.129" />
+      <inertia ixx="0.02" ixy="0" ixz="0" iyy="0.02" iyz="0" izz="0.02" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 -1.231" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/arm/link_7.stl" />
+      </geometry>
+      <material name="kuka_grey">
+        <color rgba="0.85 0.85 0.85 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -1.231" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/arm/link_7.stl" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="lbr_A1" type="revolute">
+    <origin xyz="0 0 0.1475" rpy="0 0 0" />
+    <parent link="lbr_link_0" />
+    <child link="lbr_link_1" />
+    <axis xyz="0 0 1" />
+    <limit lower="-2.9671" upper="2.9671" effort="200" velocity="2" />
+  </joint>
+  <joint name="lbr_A2" type="revolute">
+    <origin xyz="0 -0.0105 0.1925" rpy="0 0 0" />
+    <parent link="lbr_link_1" />
+    <child link="lbr_link_2" />
+    <axis xyz="0 1 0" />
+    <limit lower="-2.0944" upper="2.0944" effort="200" velocity="2" />
+  </joint>
+  <joint name="lbr_A3" type="revolute">
+    <origin xyz="0 0.0105 0.2075" rpy="0 0 0" />
+    <parent link="lbr_link_2" />
+    <child link="lbr_link_3" />
+    <axis xyz="0 0 1" />
+    <limit lower="-2.9671" upper="2.9671" effort="200" velocity="2" />
+  </joint>
+  <joint name="lbr_A4" type="revolute">
+    <origin xyz="0 0.0105 0.1925" rpy="0 0 0" />
+    <parent link="lbr_link_3" />
+    <child link="lbr_link_4" />
+    <axis xyz="0 -1 0" />
+    <limit lower="-2.0944" upper="2.0944" effort="200" velocity="2" />
+  </joint>
+  <joint name="lbr_A5" type="revolute">
+    <origin xyz="0 -0.0105 0.2075" rpy="0 0 0" />
+    <parent link="lbr_link_4" />
+    <child link="lbr_link_5" />
+    <axis xyz="0 0 1" />
+    <limit lower="-2.9671" upper="2.9671" effort="200" velocity="2" />
+  </joint>
+  <joint name="lbr_A6" type="revolute">
+    <origin xyz="0 -0.0707 0.1925" rpy="0 0 0" />
+    <parent link="lbr_link_5" />
+    <child link="lbr_link_6" />
+    <axis xyz="0 1 0" />
+    <limit lower="-2.0944" upper="2.0944" effort="200" velocity="2" />
+  </joint>
+  <joint name="lbr_A7" type="revolute">
+    <origin xyz="0 0.0707 0.091" rpy="0 0 0" />
+    <parent link="lbr_link_6" />
+    <child link="lbr_link_7" />
+    <axis xyz="0 0 1" />
+    <limit lower="-3.0543" upper="3.0543" effort="200" velocity="2" />
+  </joint>
+  <link name="lbr_link_ee">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.001" />
+      <inertia ixx="1e-07" ixy="0" ixz="0" iyy="1e-07" iyz="0" izz="1e-07" />
+    </inertial>
+  </link>
+  <joint name="lbr_joint_ee" type="fixed">
+    <origin xyz="0 0 0.035" rpy="0 0 0" />
+    <parent link="lbr_link_7" />
+    <child link="lbr_link_ee" />
+  </joint>
+  <link name="gripper_assembly_root">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.001" />
+      <inertia ixx="1e-07" ixy="0" ixz="0" iyy="1e-07" iyz="0" izz="1e-07" />
+    </inertial>
+  </link>
+  <link name="gripper_cad_export">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.001" />
+      <inertia ixx="1e-07" ixy="0" ixz="0" iyy="1e-07" iyz="0" izz="1e-07" />
+    </inertial>
+  </link>
+  <link name="gripper_mount_for_kuka">
+    <inertial>
+      <origin xyz="-0.250492311 -0.00575342481 0.2274575" rpy="0 0 0" />
+      <mass value="0.097339" />
+      <inertia ixx="6.86726e-05" ixy="-1.4764e-09" ixz="-2.70074e-06" iyy="0.000127436" iyz="6.39343e-08" izz="6.8288e-05" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/gripper/mount_for_kuka.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="gripper_mat_mount_for_kuka">
+        <color rgba="0.08 0.08 0.08 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/gripper/mount_for_kuka.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="gripper_gripper_backplate">
+    <inertial>
+      <origin xyz="-0.249580061 0.0423394627 0.238040124" rpy="0 0 0" />
+      <mass value="0.146967" />
+      <inertia ixx="0.000142478" ixy="-9.59539e-07" ixz="-8.19191e-07" iyy="0.000319168" iyz="-2.63102e-05" izz="0.000340198" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/gripper/gripper_backplate.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="gripper_mat_gripper_backplate">
+        <color rgba="0.08 0.08 0.08 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/gripper/gripper_backplate.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="gripper_bridge_rails_support">
+    <inertial>
+      <origin xyz="-0.249982655 0.0666288882 0.230457901" rpy="0 0 0" />
+      <mass value="0.0401213" />
+      <inertia ixx="6.5962e-06" ixy="3.28405e-09" ixz="2.48834e-09" iyy="0.000126062" iyz="1.59967e-09" izz="0.000121678" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/gripper/bridge_rails_support.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="gripper_mat_bridge_rails_support">
+        <color rgba="0.08 0.08 0.08 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/gripper/bridge_rails_support.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="gripper_camera_mount">
+    <inertial>
+      <origin xyz="-0.248478921 0.0916342374 0.318872858" rpy="0 0 0" />
+      <mass value="0.00355933" />
+      <inertia ixx="8.81414e-07" ixy="-6.36091e-09" ixz="-4.05276e-09" iyy="8.73228e-07" iyz="-4.29069e-07" izz="1.03709e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/gripper/camera_mount.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="gripper_mat_camera_mount">
+        <color rgba="0.08 0.08 0.08 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/gripper/camera_mount.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="gripper_camera_anchor_left">
+    <inertial>
+      <origin xyz="-0.254904738 0.0734570046 0.299755218" rpy="0 0 0" />
+      <mass value="0.00424789" />
+      <inertia ixx="4.36563e-07" ixy="3.2004e-10" ixz="-6.93121e-09" iyy="4.14356e-07" iyz="1.54062e-08" izz="1.25778e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/gripper/camera_anchor_left.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="gripper_mat_camera_anchor_left">
+        <color rgba="0.08 0.08 0.08 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/gripper/camera_anchor_left.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="gripper_camera_anchor_right">
+    <inertial>
+      <origin xyz="-0.243001481 0.073459592 0.299696673" rpy="0 0 0" />
+      <mass value="0.00392497" />
+      <inertia ixx="4.02177e-07" ixy="-2.85614e-10" ixz="6.18317e-09" iyy="3.74305e-07" iyz="1.4168e-08" izz="1.07722e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/gripper/camera_anchor_right.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="gripper_mat_camera_anchor_right">
+        <color rgba="0.08 0.08 0.08 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/gripper/camera_anchor_right.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="gripper_finger_left">
+    <inertial>
+      <origin xyz="-0.294301229 0.100061954 0.229815742" rpy="0 0 0" />
+      <mass value="0.0452896" />
+      <inertia ixx="2.07618e-05" ixy="-2.94113e-06" ixz="2.66412e-07" iyy="1.01118e-05" iyz="1.12622e-06" izz="1.54453e-05" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/gripper/finger_backbone_left.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="gripper_mat_finger_left_0">
+        <color rgba="0.08 0.08 0.08 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/gripper/finger_backbone_left.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/gripper/finger_adaptor_left.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="gripper_mat_finger_left_1">
+        <color rgba="0.08 0.08 0.08 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/gripper/finger_adaptor_left.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="gripper_fingertip_left">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.001" />
+      <inertia ixx="1e-07" ixy="0" ixz="0" iyy="1e-07" iyz="0" izz="1e-07" />
+    </inertial>
+  </link>
+  <link name="gripper_finger_right">
+    <inertial>
+      <origin xyz="-0.204323819 0.100061816 0.229815746" rpy="0 0 0" />
+      <mass value="0.0452895" />
+      <inertia ixx="2.07618e-05" ixy="2.94099e-06" ixz="-2.66407e-07" iyy="1.01117e-05" iyz="1.12622e-06" izz="1.54453e-05" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/gripper/finger_backbone_right.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="gripper_mat_finger_right_0">
+        <color rgba="0.08 0.08 0.08 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/gripper/finger_backbone_right.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/gripper/finger_adaptor_right.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="gripper_mat_finger_right_1">
+        <color rgba="0.08 0.08 0.08 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/gripper/finger_adaptor_right.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="gripper_fingertip_right">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.001" />
+      <inertia ixx="1e-07" ixy="0" ixz="0" iyy="1e-07" iyz="0" izz="1e-07" />
+    </inertial>
+  </link>
+  <link name="gripper_arducam">
+    <inertial>
+      <origin xyz="7.76389481e-05 0.000156582725 -0.00990939331" rpy="0 0 0" />
+      <mass value="0.0160085" />
+      <inertia ixx="1.4635e-06" ixy="1.12288e-08" ixz="-8.62103e-09" iyy="1.42295e-06" iyz="2.35554e-08" izz="1.57413e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/gripper/arducam_uc684.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="gripper_mat_arducam">
+        <color rgba="0.1 0.3 0.15 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/gripper/arducam_uc684.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="gripper_arducam_optical">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.001" />
+      <inertia ixx="1e-07" ixy="0" ixz="0" iyy="1e-07" iyz="0" izz="1e-07" />
+    </inertial>
+  </link>
+  <link name="gripper_fingertip_center">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.001" />
+      <inertia ixx="1e-07" ixy="0" ixz="0" iyy="1e-07" iyz="0" izz="1e-07" />
+    </inertial>
+  </link>
+  <joint name="gripper_flange__gripper" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="lbr_link_ee" />
+    <child link="gripper_assembly_root" />
+  </joint>
+  <joint name="gripper_root__cad" type="fixed">
+    <origin xyz="-0.2275 0.2505 0.018" rpy="1.57079633 0 1.57079633" />
+    <parent link="gripper_assembly_root" />
+    <child link="gripper_cad_export" />
+  </joint>
+  <joint name="gripper_cad__mount_for_kuka" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="gripper_cad_export" />
+    <child link="gripper_mount_for_kuka" />
+  </joint>
+  <joint name="gripper_cad__gripper_backplate" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="gripper_cad_export" />
+    <child link="gripper_gripper_backplate" />
+  </joint>
+  <joint name="gripper_cad__bridge_rails_support" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="gripper_cad_export" />
+    <child link="gripper_bridge_rails_support" />
+  </joint>
+  <joint name="gripper_cad__camera_mount" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="gripper_cad_export" />
+    <child link="gripper_camera_mount" />
+  </joint>
+  <joint name="gripper_cad__camera_anchor_left" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="gripper_cad_export" />
+    <child link="gripper_camera_anchor_left" />
+  </joint>
+  <joint name="gripper_cad__camera_anchor_right" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="gripper_cad_export" />
+    <child link="gripper_camera_anchor_right" />
+  </joint>
+  <joint name="gripper_finger_left_joint" type="prismatic">
+    <origin xyz="0.0310306778 0 0" rpy="0 0 0" />
+    <parent link="gripper_cad_export" />
+    <child link="gripper_finger_left" />
+    <axis xyz="-1 0 0" />
+    <limit lower="0" upper="0.037" effort="100.0" velocity="0.2" />
+  </joint>
+  <joint name="gripper_finger_left__tip" type="fixed">
+    <origin xyz="-0.280343109 0.159840393 0.23103923" rpy="1.57079633 0 1.57079633" />
+    <parent link="gripper_finger_left" />
+    <child link="gripper_fingertip_left" />
+  </joint>
+  <joint name="gripper_finger_right_joint" type="prismatic">
+    <origin xyz="-0.0310306778 0 0" rpy="0 0 0" />
+    <parent link="gripper_cad_export" />
+    <child link="gripper_finger_right" />
+    <axis xyz="1 0 0" />
+    <limit lower="0" upper="0.037" effort="100.0" velocity="0.2" />
+  </joint>
+  <joint name="gripper_finger_right__tip" type="fixed">
+    <origin xyz="-0.218281754 0.159840393 0.23103923" rpy="1.57079633 0 1.57079633" />
+    <parent link="gripper_finger_right" />
+    <child link="gripper_fingertip_right" />
+  </joint>
+  <joint name="gripper_camera_mount__arducam" type="fixed">
+    <origin xyz="-0.24934 0.09449 0.31986" rpy="0.698131701 0 0" />
+    <parent link="gripper_camera_mount" />
+    <child link="gripper_arducam" />
+  </joint>
+  <joint name="gripper_arducam__optical" type="fixed">
+    <origin xyz="0 0 -0.0252" rpy="3.14159265 0 0" />
+    <parent link="gripper_arducam" />
+    <child link="gripper_arducam_optical" />
+  </joint>
+  <joint name="gripper_cad__fingertip_center" type="fixed">
+    <origin xyz="-0.249312576 0.159840393 0.23103923" rpy="1.57079633 0 1.57079633" />
+    <parent link="gripper_cad_export" />
+    <child link="gripper_fingertip_center" />
+  </joint>
+</robot>
