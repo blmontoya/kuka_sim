@@ -509,7 +509,8 @@
     </inertial>
   </link>
   <joint name="gripper_flange__gripper" type="fixed">
-    <origin xyz="0 0 0" rpy="0 0 0" />
+    <!-- mount rotated 180 deg about the flange z (kuka_easyhec check_mount.py on the calibration photos) -->
+    <origin xyz="0 0 0" rpy="0 0 3.14159265" />
     <parent link="lbr_link_ee" />
     <child link="gripper_assembly_root" />
   </joint>

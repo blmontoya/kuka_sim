@@ -56,6 +56,7 @@ from kuka_sim.cell import (  # noqa: E402
     pose_from_matrix,
 )
 
+TABLE_HEIGHT = 0.004  # tabletop above the base mounting surface [m] (measured)
 PAD = 16  # extra rendered pixels per side, so the principal-point shift never samples outside the render
 COLORS = {"arm1": (60, 220, 60), "arm2": (60, 140, 255), "gripper": (255, 210, 0)}  # RGB
 
@@ -67,11 +68,11 @@ def build_scene(cal: CellCalibration):
     dome.func("/World/DomeLight", dome)
     light = sim_utils.DistantLightCfg(intensity=2500.0, angle=0.5)
     light.func("/World/KeyLight", light, orientation=(0.87, 0.2, -0.3, 0.3))
-    # visual-only tabletop at the bases' mounting surface (no collider, so it can't push on the arms)
+    # visual-only tabletop, top face TABLE_HEIGHT above the bases' mounting surface (no collider, so it can't push on the arms)
     table = sim_utils.CuboidCfg(
         size=(1.6, 2.2, 0.02), visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(0.80, 0.66, 0.48), roughness=0.6)
     )
-    table.func("/World/Table", table, translation=(0.55, -0.36, -0.0101))
+    table.func("/World/Table", table, translation=(0.55, -0.36, TABLE_HEIGHT - 0.0101))
 
     arm1 = Articulation(IIWA7_HANDUMI_CFG.replace(prim_path="/World/Arm1"))
     pos2, rot2 = pose_from_matrix(cal.T_arm1_arm2)
