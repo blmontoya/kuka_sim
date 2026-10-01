@@ -244,6 +244,22 @@
       <mass value="0.001" />
       <inertia ixx="1e-07" ixy="0" ixz="0" iyy="1e-07" iyz="0" izz="1e-07" />
     </inertial>
+    <!-- media flange: fills the 22 mm from the iiwa flange face to the gripper mount plate -->
+    <visual name="media_flange">
+      <origin xyz="0 0 -0.011" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="0.04" length="0.022" />
+      </geometry>
+      <material name="media_flange">
+        <color rgba="0.75 0.75 0.78 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.011" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="0.04" length="0.022" />
+      </geometry>
+    </collision>
   </link>
   <link name="gripper_cad_export">
     <inertial>
@@ -509,8 +525,9 @@
     </inertial>
   </link>
   <joint name="gripper_flange__gripper" type="fixed">
-    <!-- mount rotated 180 deg about the flange z (kuka_easyhec check_mount.py on the calibration photos) -->
-    <origin xyz="0 0 0" rpy="0 0 3.14159265" />
+    <!-- 22 mm media flange (silver, ports + button) between the iiwa flange and the gripper mount; mount rotated
+         180 deg about the flange z. Both from kuka_easyhec check_mount.py on the calibration photos -->
+    <origin xyz="0 0 0.022" rpy="0 0 3.14159265" />
     <parent link="lbr_link_ee" />
     <child link="gripper_assembly_root" />
   </joint>

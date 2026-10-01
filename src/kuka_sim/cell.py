@@ -20,7 +20,11 @@ from isaaclab.assets import ArticulationCfg
 from isaaclab.sim.converters import UrdfConverterCfg
 
 ASSET_DIR = Path(__file__).resolve().parent / "assets" / "iiwa7_handumi"
-DEFAULT_CALIB_DIR = Path(__file__).resolve().parents[3] / "camera_calibration_20260924"
+DEFAULT_CALIB_DIR = Path(__file__).resolve().parents[3] / "camera_calibration_20260924"  # bare-arm calibration
+# gripper-aware EasyHec runs (one folder per arm, each with its own dataset.npz)
+DEFAULT_GRIPPER_RUNS = tuple(
+    Path(__file__).resolve().parents[3] / "kuka_easyhec" / "results" / f"gripper_{a}" for a in ("arm1", "arm2")
+)
 
 ARM_JOINTS = [f"lbr_A{i}" for i in range(1, 8)]
 FINGER_JOINTS = ["gripper_finger_left_joint", "gripper_finger_right_joint"]
@@ -61,7 +65,8 @@ class CellCalibration:
     T_arm1_arm2: np.ndarray  # arm2 base in arm1 base
     images: np.ndarray  # (N, H, W, 3) RGB calibration photos
     joints_deg: dict[str, np.ndarray]  # "arm1"/"arm2" -> (N, 7), KUKA A1..A7 in degrees
-    sam_masks: dict[str, np.ndarray]  # "arm1"/"arm2" -> (N, H, W) SAM2 masks used by EasyHec (arm only, no gripper)
+    sam_masks: dict[str, dict[int, np.ndarray]]  # "arm1"/"arm2" -> {pose index: (H, W) SAM2 mask EasyHec was fit to}
+    masks_include_gripper: bool  # True if the SAM2 masks cover the gripper too (calibrated with the gripper in the URDF)
 
     @staticmethod
     def load(calib_dir: Path = DEFAULT_CALIB_DIR) -> CellCalibration:
@@ -78,7 +83,42 @@ class CellCalibration:
             T_arm1_arm2=np.array(cell["arm2_base_in_arm1_base"]["matrix"], dtype=np.float64),
             images=images,
             joints_deg={a: data[f"joints_deg_{a}"] for a in ("arm1", "arm2")},
-            sam_masks={a: np.load(calib_dir / a / "masks.npy") > 0.5 for a in ("arm1", "arm2")},
+            sam_masks={a: dict(enumerate(np.load(calib_dir / a / "masks.npy") > 0.5)) for a in ("arm1", "arm2")},
+            masks_include_gripper=False,
+        )
+
+    @staticmethod
+    def load_gripper_runs(arm1_run: Path = DEFAULT_GRIPPER_RUNS[0], arm2_run: Path = DEFAULT_GRIPPER_RUNS[1]) -> CellCalibration:
+        """Load two separate gripper-aware EasyHec runs (``<run>/dataset.npz`` + ``<run>/<arm>/``).
+
+        The photos and joint angles come from arm1's run. Each run may use a subset of those photos; its masks are
+        matched back to the photo they were drawn on. arm2's base pose is chained through the camera, as in
+        kuka_easyhec/combine.py.
+        """
+        runs = {"arm1": Path(arm1_run), "arm2": Path(arm2_run)}
+        data = np.load(runs["arm1"] / "dataset.npz")
+        images = data["images"]
+        T_cam_ros = {a: np.load(r / a / "camera_pose_ros.npy").astype(np.float64) for a, r in runs.items()}
+        sam_masks = {}
+        for a, r in runs.items():
+            run_images = np.load(r / "dataset.npz")["images"]
+            masks = np.load(r / a / "masks.npy") > 0.5
+            sam_masks[a] = {}
+            for img, m in zip(run_images, masks):
+                match = [i for i, ref in enumerate(images) if np.array_equal(ref, img)]
+                if not match:
+                    raise ValueError(f"{r}: a photo in its dataset.npz is not in {runs['arm1'] / 'dataset.npz'}")
+                sam_masks[a][match[0]] = m
+        return CellCalibration(
+            K=data["intrinsic"].astype(np.float64),
+            width=images.shape[2],
+            height=images.shape[1],
+            T_arm1_cam_cv=np.linalg.inv(np.load(runs["arm1"] / "arm1" / "camera_extrinsic_opencv.npy").astype(np.float64)),
+            T_arm1_arm2=T_cam_ros["arm1"] @ np.linalg.inv(T_cam_ros["arm2"]),
+            images=images,
+            joints_deg={a: data[f"joints_deg_{a}"] for a in ("arm1", "arm2")},
+            sam_masks=sam_masks,
+            masks_include_gripper=True,
         )
 
 
