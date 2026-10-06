@@ -152,11 +152,6 @@ bag = "ros2 bag record -s mcap --all"
 build-ros = "colcon build"
 [feature.ros2.target.unix.activation]
 scripts = ["ros2_ws/install/setup.bash", "scripts/config-ros2-colcon.bash"]
-
-### Isaac Sim Environment-----------------------------------------------------------------------
-# Warning; not as compatible as the other environments; use with caution
-# Isaac Sim 5.1.0 now supports Python 3.11!
-[feature.isaaclab]
 [feature.isaaclab.dependencies]
 setuptools = "<81"
 sysroot_linux-64 = ">=2.35"
@@ -219,6 +214,7 @@ starlette = "==0.49.1"
 isaacsim = { version = "==5.1.0", index = "https://pypi.nvidia.com", extras = ["all", "extscache"] }
 # Patched egl_probe (CMake 3.5+ fix)
 egl-probe = { path = "patches/egl_probe", editable = true }
+pyrealsense2 = ">=2.55"
 ### Isaac Lab PhysX Feature (use with isaaclab feature)----------------------------------------
 [feature.isaaclab-physx]
 [feature.isaaclab-physx.tasks]
