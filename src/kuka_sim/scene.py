@@ -136,8 +136,9 @@ def robot_cfg(flange_mm: float | None = None, out: Path | None = None):
 
 
 def build_cell(cal: CellCalibration, device: str, flange_mm: float | None = None, out: Path | None = None,
-               overview: bool = True):
+               overview: bool = True, pad: int = PAD):
     """Lights, table, both arms (arm2 at its calibrated pose), the calibrated D455 and optionally an overview camera.
+    `pad` is the extra rendered border per side; camera intrinsics randomization needs more (CameraDRCfg.required_pad).
 
     Returns (sim, {"arm1": .., "arm2": ..}, d455, overview_camera_or_None).
     """
@@ -163,7 +164,7 @@ def build_cell(cal: CellCalibration, device: str, flange_mm: float | None = None
     # D455 colour camera. RTX ignores principal-point offsets and uses fy = fx, so render a centred pinhole with
     # the calibrated fx and a PAD border, then warp it onto the exact calibrated K (see to_calibrated_k).
     fx = cal.K[0, 0]
-    w_r, h_r = cal.width + 2 * PAD, cal.height + 2 * PAD
+    w_r, h_r = cal.width + 2 * pad, cal.height + 2 * pad
     K_render = [fx, 0.0, w_r / 2, 0.0, fx, h_r / 2, 0.0, 0.0, 1.0]
     cam_pos, cam_rot = pose_from_matrix(cal.T_arm1_cam_cv)
     d455 = Camera(
@@ -211,11 +212,15 @@ def set_pose(arm: Articulation, q_deg: np.ndarray, finger_q: float):
     return q
 
 
-def to_calibrated_k(img: np.ndarray, cal: CellCalibration, nearest: bool) -> np.ndarray:
-    """Resample a centred-pinhole render (fx = fy, PAD border) onto the calibrated K (cx, cy, fy)."""
-    fx, fy, cx, cy = cal.K[0, 0], cal.K[1, 1], cal.K[0, 2], cal.K[1, 2]
+def to_calibrated_k(img: np.ndarray, cal: CellCalibration, nearest: bool, K: np.ndarray | None = None) -> np.ndarray:
+    """Resample a centred-pinhole render (fx = fy = cal fx, padded border) onto the calibrated K (cx, cy, fy),
+    or onto `K` instead (e.g. randomized intrinsics from CameraRandomizer)."""
+    f_r = cal.K[0, 0]  # the render's focal length (build_cell renders with the calibrated fx)
+    K = cal.K if K is None else K
+    fx, fy, cx, cy = K[0, 0], K[1, 1], K[0, 2], K[1, 2]
     h_r, w_r = img.shape[:2]
-    # dst pixel (u, v) -> src (u - cx + c_rx, fx/fy * (v - cy) + c_ry); pixel centres at integers (OpenCV)
-    M = np.array([[1.0, 0.0, (w_r - 1) / 2 - cx], [0.0, fx / fy, (h_r - 1) / 2 - fx / fy * cy]])
+    # dst pixel (u, v) -> src (f_r/fx * (u - cx) + c_rx, f_r/fy * (v - cy) + c_ry); pixel centres at integers (OpenCV)
+    sx, sy = f_r / fx, f_r / fy
+    M = np.array([[sx, 0.0, (w_r - 1) / 2 - sx * cx], [0.0, sy, (h_r - 1) / 2 - sy * cy]])
     interp = cv2.INTER_NEAREST if nearest else cv2.INTER_LINEAR
     return cv2.warpAffine(img, M, (cal.width, cal.height), flags=interp | cv2.WARP_INVERSE_MAP)

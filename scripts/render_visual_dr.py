@@ -1,11 +1,12 @@
-"""Render the calibrated cell with randomized arm appearance (visual domain randomization).
+"""Render the calibrated cell with randomized arm appearance and, optionally, a slightly randomized D455.
 
 For each sample this puts both arms in a calibration pose, gives every arm/gripper link a random flat colour or a
-random image texture (see kuka_sim/visual_dr.py), renders the simulated D455 and writes:
+random image texture (see kuka_sim/visual_dr.py), with --camera-dr also jitters the D455's focal length, principal
+point, tilt and position around the calibration (see kuka_sim/camera_dr.py), renders the D455 and writes:
 
     dr_<i>.png         the randomized D455 render
     contact_sheet.png  all renders in one image
-    samples.json       the pose and per-link material sample behind each render
+    samples.json       the pose, per-link material and camera sample behind each render
 
 Run from kuka_sim/:
 
@@ -15,9 +16,12 @@ Run from kuka_sim/:
     pixi r -e isaaclab-gpu python scripts/render_visual_dr.py --headless --procedural-textures 64
     # colours + your own images (any folder of png/jpg, e.g. the DTD texture dataset)
     pixi r -e isaaclab-gpu python scripts/render_visual_dr.py --headless --texture-dir /path/to/images
+    # camera intrinsics + extrinsics DR only (arms keep their normal colours)
+    pixi r -e isaaclab-gpu python scripts/render_visual_dr.py --headless --camera-dr --no-arm-dr
 
 Drop --headless to see it in the Isaac Sim window: after the batch, the arms get one random look (one "episode")
-and hold it until you close the window (--num-samples 0 skips the batch; --live-every N starts a new episode every N s).
+and hold it until you close the window. Press R in the window for a new episode (new look, camera and, unless --pose,
+a new pose); --live-every N also starts one every N s. --num-samples 0 skips the batch.
 """
 
 from __future__ import annotations
@@ -41,6 +45,12 @@ parser.add_argument("--render-frames", type=int, default=30, help="RTX frames pe
 parser.add_argument("--warmup-frames", type=int, default=120)
 parser.add_argument("--seed", type=int, default=None, help="fix the random looks (default: different every run)")
 parser.add_argument("--pose", type=int, default=None, help="hold this calibration pose instead of a random one per sample")
+parser.add_argument("--no-arm-dr", action="store_true", help="keep the arms' normal colours")
+parser.add_argument("--camera-dr", action="store_true", help="also randomize the D455 intrinsics + extrinsics slightly")
+parser.add_argument("--focal-scale", type=float, default=0.02, help="camera DR: focal length +- this fraction")
+parser.add_argument("--principal-px", type=float, default=4.0, help="camera DR: principal point +- pixels")
+parser.add_argument("--rot-deg", type=float, default=1.0, help="camera DR: tilt/pan/roll +- degrees")
+parser.add_argument("--trans-m", type=float, default=0.01, help="camera DR: position +- metres per axis")
 parser.add_argument("--live-every", type=float, default=0.0,
                     help="with the GUI: seconds per episode (new look each); 0 = one look, held")
 AppLauncher.add_app_launcher_args(parser)
@@ -49,12 +59,14 @@ args.enable_cameras = True
 app = AppLauncher(args).app
 
 import json  # noqa: E402
+import time  # noqa: E402
 
 import cv2  # noqa: E402
 import numpy as np  # noqa: E402
 
+from kuka_sim.camera_dr import CameraDRCfg, CameraRandomizer  # noqa: E402
 from kuka_sim.cell import DEFAULT_GRIPPER_RUNS, FINGER_MAX, CellCalibration  # noqa: E402
-from kuka_sim.scene import build_cell, set_pose, to_calibrated_k  # noqa: E402
+from kuka_sim.scene import PAD, build_cell, set_pose, to_calibrated_k  # noqa: E402
 from kuka_sim.visual_dr import ArmVisualRandomizer, VisualDRCfg, make_procedural_textures  # noqa: E402
 
 
@@ -67,10 +79,16 @@ def main():
     if args.procedural_textures:
         texture_dir = make_procedural_textures(out / "textures", n=args.procedural_textures, seed=args.seed)
 
-    sim, arms, d455, _ = build_cell(cal, args.device, out=out, overview=False)
-    dr = ArmVisualRandomizer(VisualDRCfg(texture_dir=texture_dir, texture_prob=args.texture_prob,
-                                         per_link=not args.per_arm, seed=args.seed))
-    print(f"randomizing {len(dr.visuals)} link visuals, {len(dr.textures)} textures", flush=True)
+    cam_cfg = CameraDRCfg(focal_scale=args.focal_scale, principal_px=args.principal_px, rot_deg=args.rot_deg,
+                          trans_m=args.trans_m, seed=args.seed)
+    pad = max(PAD, cam_cfg.required_pad(cal)) if args.camera_dr else PAD
+    sim, arms, d455, _ = build_cell(cal, args.device, out=out, overview=False, pad=pad)
+    dr = None
+    if not args.no_arm_dr:
+        dr = ArmVisualRandomizer(VisualDRCfg(texture_dir=texture_dir, texture_prob=args.texture_prob,
+                                             per_link=not args.per_arm, seed=args.seed))
+        print(f"randomizing {len(dr.visuals)} link visuals, {len(dr.textures)} textures", flush=True)
+    cam_dr = CameraRandomizer(d455, cal, cam_cfg) if args.camera_dr else None
     for _ in range(args.warmup_frames):
         sim.step(render=True)
 
@@ -80,16 +98,19 @@ def main():
         pose = int(rng.integers(len(cal.images))) if args.pose is None else args.pose
         for a, arm in arms.items():
             set_pose(arm, cal.joints_deg[a][pose], finger_q)
-        samples = dr.randomize()
+        samples = dr.randomize() if dr else []
+        cam = cam_dr.randomize() if cam_dr else None
         for _ in range(args.render_frames):
             sim.step(render=True)
             for arm in arms.values():
                 arm.update(sim.get_physics_dt())
         d455.update(0.0, force_recompute=True)
-        rgb = to_calibrated_k(d455.data.output["rgb"][0, ..., :3].cpu().numpy(), cal, nearest=False)
+        rgb = to_calibrated_k(d455.data.output["rgb"][0, ..., :3].cpu().numpy(), cal, nearest=False,
+                              K=cam["K"] if cam else None)
         cv2.imwrite(str(out / f"dr_{i}.png"), cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR))
         renders.append(rgb)
-        log.append({"sample": i, "pose": pose, "links": samples})
+        camera = {k: (v.tolist() if isinstance(v, np.ndarray) else v) for k, v in cam.items()} if cam else None
+        log.append({"sample": i, "pose": pose, "camera": camera, "links": samples})
         print(f"sample {i}: pose {pose}", flush=True)
 
     if renders:
@@ -109,16 +130,35 @@ def main():
             print(f"live: new episode every {args.live_every:g} s; close the Isaac Sim window to exit", flush=True)
         else:
             print("live: holding one random look; close the Isaac Sim window to exit", flush=True)
-        steps_per_sample = round(args.live_every / sim.get_physics_dt()) if args.live_every > 0 else None
-        step = 0
+        # press R in the Isaac Sim window for a new episode right away
+        import carb
+        import omni.appwindow
+
+        reset = {"requested": False}
+
+        def on_key(event, *_):
+            if event.type == carb.input.KeyboardEventType.KEY_PRESS and event.input.name == "R":
+                reset["requested"] = True
+            return True
+
+        keyboard_input = carb.input.acquire_input_interface()
+        keyboard = omni.appwindow.get_default_app_window().get_keyboard()
+        key_sub = keyboard_input.subscribe_to_keyboard_events(keyboard, on_key)  # noqa: F841 (keep subscribed)
+        print("live: press R in the Isaac Sim window for a new random look", flush=True)
+
+        next_episode = 0.0  # wall-clock time of the next new look (the sim runs faster than real time)
         while app.is_running():
-            if step == 0 or (steps_per_sample and step % steps_per_sample == 0):
+            if reset["requested"] or time.monotonic() >= next_episode:
+                reset["requested"] = False
+                next_episode = time.monotonic() + args.live_every if args.live_every > 0 else float("inf")
                 pose = int(rng.integers(len(cal.images))) if args.pose is None else args.pose
                 for a, arm in arms.items():
                     set_pose(arm, cal.joints_deg[a][pose], finger_q)
-                dr.randomize()
+                if dr:
+                    dr.randomize()
+                if cam_dr:
+                    cam_dr.randomize()
             sim.step(render=True)
-            step += 1
 
 
 if __name__ == "__main__":
