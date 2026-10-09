@@ -212,10 +212,12 @@ def set_pose(arm: Articulation, q_deg: np.ndarray, finger_q: float):
     return q
 
 
-def to_calibrated_k(img: np.ndarray, cal: CellCalibration, nearest: bool, K: np.ndarray | None = None) -> np.ndarray:
+def to_calibrated_k(img: np.ndarray, cal: CellCalibration, nearest: bool, K: np.ndarray | None = None,
+                    f_render: float | None = None) -> np.ndarray:
     """Resample a centred-pinhole render (fx = fy = cal fx, padded border) onto the calibrated K (cx, cy, fy),
-    or onto `K` instead (e.g. randomized intrinsics from CameraRandomizer)."""
-    f_r = cal.K[0, 0]  # the render's focal length (build_cell renders with the calibrated fx)
+    or onto `K` instead (e.g. randomized intrinsics from CameraRandomizer). `f_render` is the render's focal length
+    if the camera's USD focal length was changed (CameraRandomizer returns it)."""
+    f_r = cal.K[0, 0] if f_render is None else f_render  # build_cell renders with the calibrated fx
     K = cal.K if K is None else K
     fx, fy, cx, cy = K[0, 0], K[1, 1], K[0, 2], K[1, 2]
     h_r, w_r = img.shape[:2]

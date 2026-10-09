@@ -21,7 +21,8 @@ Run from kuka_sim/:
 
 Drop --headless to see it in the Isaac Sim window: after the batch, the arms get one random look (one "episode")
 and hold it until you close the window. Press R in the window for a new episode (new look, camera and, unless --pose,
-a new pose); --live-every N also starts one every N s. --num-samples 0 skips the batch.
+a new pose); --live-every N also starts one every N s. --num-samples 0 skips the batch. With --camera-dr the
+viewport looks through the D455, so each episode's focal length and tilt change what you see.
 """
 
 from __future__ import annotations
@@ -106,7 +107,7 @@ def main():
                 arm.update(sim.get_physics_dt())
         d455.update(0.0, force_recompute=True)
         rgb = to_calibrated_k(d455.data.output["rgb"][0, ..., :3].cpu().numpy(), cal, nearest=False,
-                              K=cam["K"] if cam else None)
+                              K=cam["K"] if cam else None, f_render=cam["f_render"] if cam else None)
         cv2.imwrite(str(out / f"dr_{i}.png"), cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR))
         renders.append(rgb)
         camera = {k: (v.tolist() if isinstance(v, np.ndarray) else v) for k, v in cam.items()} if cam else None
@@ -125,7 +126,14 @@ def main():
     if not args.headless:
         # one random look (one "episode"), held until the window is closed; --live-every > 0 starts a new
         # episode (new look, and a new pose unless --pose) every that many seconds
-        sim.set_camera_view(eye=[1.9, 0.9, 1.35], target=[0.35, -0.36, 0.25])
+        if cam_dr:
+            # look through the D455 so each episode's focal length and tilt show up in the viewport
+            from omni.kit.viewport.utility import get_active_viewport
+
+            get_active_viewport().camera_path = "/World/D455/color"
+            print("live: viewport looks through the D455 (don't drag in it, that moves the camera)", flush=True)
+        else:
+            sim.set_camera_view(eye=[1.9, 0.9, 1.35], target=[0.35, -0.36, 0.25])
         if args.live_every > 0:
             print(f"live: new episode every {args.live_every:g} s; close the Isaac Sim window to exit", flush=True)
         else:
@@ -157,7 +165,10 @@ def main():
                 if dr:
                     dr.randomize()
                 if cam_dr:
-                    cam_dr.randomize()
+                    cam = cam_dr.randomize()
+                    print(f"episode: pose {pose}, focal x{cam['focal_scale']:.3f}, "
+                          f"tilt/pan/roll {np.round(cam['rot_deg_xyz'], 2).tolist()} deg, "
+                          f"shift {np.round(np.array(cam['trans_m_xyz']) * 1000, 1).tolist()} mm", flush=True)
             sim.step(render=True)
 
 
